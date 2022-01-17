@@ -1,7 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { set } from "date-fns";
 
-export const getNotesForDate = async (prisma: PrismaClient, date: Date) => {
+export const getNotesForDate = async (
+  prisma: PrismaClient,
+  year: number,
+  month: number,
+  day: number
+) => {
+
   return await prisma.note.findMany({
     include: {
       noteType: true,
@@ -9,23 +15,18 @@ export const getNotesForDate = async (prisma: PrismaClient, date: Date) => {
     where: {
       AND: [
         {
-          createdAt: {
-            gt: set(date, {
-              hours: 0,
-              minutes: 0,
-              seconds: 0,
-              milliseconds: 0,
-            }),
+          targetDay: {
+            equals: day,
           },
         },
         {
-          createdAt: {
-            lt: set(date, {
-              hours: 23,
-              minutes: 59,
-              seconds: 59,
-              milliseconds: 999,
-            }),
+          targetMonth: {
+            equals: month,
+          },
+        },
+        {
+          targetYear: {
+            equals: year,
           },
         },
       ],

@@ -28,6 +28,7 @@ const Home: NextPage<HomeProps> = ({ notes }) => {
     const year = startDate.getFullYear();
     const month = startDate.getMonth() + 1;
     const day = startDate.getDate();
+    console.log(year, month, day);
     axios.get(`api/note/${year}/${month}/${day}`).then((res) => {
       setCurrentNotes(res.data);
       setIsLoading(false);
@@ -72,7 +73,13 @@ export default Home;
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const prisma = new PrismaClient();
 
-  const notes = await getNotesForDate(prisma, new Date());
+  const date = new Date();
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  const notes = await getNotesForDate(prisma, year, month, day);
 
   return {
     props: {

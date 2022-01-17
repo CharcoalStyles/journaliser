@@ -10,9 +10,9 @@ type Data = Array<
 >;
 
 type Slugs = {
-  year: number;
-  month: number;
-  day: number;
+  year: string;
+  month: string;
+  day: string;
 };
 
 export default async function handler(
@@ -22,7 +22,11 @@ export default async function handler(
   const prisma = new PrismaClient();
   //@ts-ignore
   const { day, month, year }: Slugs = req.query;
-  const date = new Date(year, month - 1, day);
-  const notes = await getNotesForDate(prisma, date);
+  const notes = await getNotesForDate(
+    prisma,
+    Number.parseInt(year),
+    Number.parseInt(month),
+    Number.parseInt(day)
+  );
   res.status(200).json(notes);
 }
